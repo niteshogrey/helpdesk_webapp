@@ -4,9 +4,14 @@ const userModel = require('../models/userModel');
 
 const register = async(req, res) =>{
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password,role } = req.body;
+        const checkExisting = await userModel.findOne({email})
+        if (checkExisting) {
+            console.log("User already exist");
+            return
+        }
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new userModel({ name, email, password: hashedPassword });
+        const newUser = new userModel({ name, email, password: hashedPassword, role });
         await newUser.save();
         res.status(201).json(newUser);
       } catch (err) {
@@ -16,6 +21,7 @@ const register = async(req, res) =>{
 
 const login = async(req, res) =>{
     const { email, password } = req.body;
+
   const user = await userModel.findOne({ email });
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return res.status(401).json({ message: 'Invalid credentials' });

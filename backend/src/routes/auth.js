@@ -1,6 +1,8 @@
 const { register, login } = require('../controllers/authControllers');
 
-const router = require('express').Router();
+const auth = require('express').Router();
 
-router.post("/register", register)
-router.post("/login", login)
+auth.post("/register", register) // http://localhost:1000/api/v1/auth/register
+auth.post("/login", login) //http://localhost:1000/api/v1/auth/login
+
+module.exports= auth
